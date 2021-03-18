@@ -9,8 +9,8 @@ const Note= mongoose.Schema({
     },
     category:{
         type:String,
-        required:true,
-        enum:['plans','work','school','life','undefined']
+        required:[true,'Plsease add a note category'],
+        enum:['plans','work','school','life']
     },
     dateCreated:{
         type:Date,

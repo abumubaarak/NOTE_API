@@ -1,26 +1,68 @@
+const asyncHandler = require("../middleware/async");
+const { findById } = require("../model/Note");
+const Note = require("../model/Note");
 
+exports.getAllNotes = async (req, res) => {
+  try {
+    const note = await Note.find();
 
-exports.getAllNotes=(req,res)=>{
-    res.status(200).json({success:true,msg:'All notes'})
-}
+    res
+      .status(200)
+      .json({ success: true, totalCount: note.length, data: note });
+  } catch (err) {
+    res.status(400).json({ success: false });
+  }
+};
 
-exports.getSingleNote=(_,res)=>{
-    res.status(200).json({success:true,msg:'Single note'})
+exports.getSingleNote = async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
 
-}
+    res.status(200).json({ success: true, data: note });
+  } catch (error) {
+    res.status(400).send({ success: false });
+  }
+};
 
-exports.createNote=(_,res)=>{
-    res.status(200).json({success:true,msg:'Note created'})
+// @desc   Create new  note
+// @route  POST /api/v1/note/
+// @access Public
+exports.createNote = async (req, res, next) => {
+  try {
+    const note = await Note.create(req.body);
+    res.status(201).json({
+      success: true,
+      data: note,
+    });
+  } catch (err) {
+    res.status(400).json({ success: false });
+  }
+};
 
-}
+exports.updateNote = async (req, res, next) => {
+  try {
+    let noteRequest = req.body;
 
-exports.updateNote=(req,res)=>{
-    res.status(200).json({success:true,msg:`Update Note ${req.params.id}`})
-}
+    noteRequest.dateUpdated = Date.now();
 
-exports.deletNote=(_,res)=>{
-    res.status(200).json({success:true,msg:'Note Deleted'})
+    const note = await Note.findByIdAndUpdate(req.params.id, noteRequest, {
+      new: true,
+      runValidators: true,
+    });
 
-}
+    res.status(200).json({ success: true, data: note });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ success: false, error: err });
+  }
+};
 
-
+exports.deletNote =async (req, res) => {
+  try {
+    
+    const note =await Note.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (error) {
+    res.status(400).json({ success: false });
+  }
+};

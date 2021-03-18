@@ -1,6 +1,6 @@
 const mongoose= require('mongoose')
 
-const Bootcamps= mongoose.Schema({
+const Note= mongoose.Schema({
 
     description:{
         type:String,
@@ -10,19 +10,20 @@ const Bootcamps= mongoose.Schema({
     category:{
         type:String,
         required:true,
-        enum:['Plans','Work','School','life','undefined']
+        enum:['plans','work','school','life','undefined']
     },
     dateCreated:{
         type:Date,
         default:Date.now
     },
     slug:String,
-    dateCategory:{
+    dateUpdated:{
         type:Date,
         default:Date.now
+
     }
 
 })
 
 
-module.exports=mongoose.model('Bootcamps',Bootcamps)
+module.exports=mongoose.model('Note',Note)
